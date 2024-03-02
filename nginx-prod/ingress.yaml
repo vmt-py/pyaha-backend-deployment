@@ -1,0 +1,21 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: nginx-prod-ingress
+  labels:
+    app: nginx-prod
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    traefik.ingress.kubernetes.io/router.tls.certresolver: myresolver
+spec:
+  rules:
+    - host: sis.vmt.gov.py
+      http:
+        paths:
+          - pathType: Prefix
+            path: /static
+            backend:
+              service:
+                name: nginx-prod
+                port:
+                  number: 80
