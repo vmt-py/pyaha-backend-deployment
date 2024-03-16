@@ -15,6 +15,9 @@ kubectl apply --server-side -k db-prod/install-operator/default
 # Crear el cluster de la base de datos:
 kubectl apply -k db-prod/install-database
 
+# Crear el servicio de redis:
+kubectl apply -k redis
+
 # Crear los secrets necesarios para hacer pull de la imagen:
 kubectl create secret docker-registry gitlab-registry \
   --docker-server=registry.gitlab.com \
