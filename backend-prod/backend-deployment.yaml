@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+  namespace: pyaha-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      imagePullSecrets:
+      - name: gitlab-registry
+      containers:
+      - name: backend
+        image: registry.gitlab.com/vmt-py/base-de-datos-vmt/backend-pyaha:latest
+        command: ["entrypoints/entrypoint-backend-prod.sh"]
+        env:
+          - name: POSTGRES_DB
+            valueFrom:
+              secretKeyRef:
+                name: bbdd-pyaha-pguser-bbdd-pyaha
+                key: dbname
+          - name: POSTGRES_USER
+            valueFrom:
+              secretKeyRef:
+                name: bbdd-pyaha-pguser-bbdd-pyaha
+                key: user
+          - name: POSTGRES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: bbdd-pyaha-pguser-bbdd-pyaha
+                key: password
+          - name: POSTGRES_HOST
+            valueFrom:
+              secretKeyRef:
+                name: bbdd-pyaha-pguser-bbdd-pyaha
+                key: host
+          - name: POSTGRES_PORT
+            valueFrom:
+              secretKeyRef:
+                name: bbdd-pyaha-pguser-bbdd-pyaha
+                key: port
+          - name: DJANGO_ENV
+            value: "prod"
+          - name: SECRET_KEY
+            valueFrom:
+              secretKeyRef:
+                name: django-secret
+                key: secret-key
+        ports:
+        - name: http
+          containerPort: 8000 
+        # livenessProbe:
+        #   httpGet:
+        #     path: /ruta-de-salud # Reemplaza con la ruta correcta de tu aplicación para verificar su salud
+        #     port: 8000
+        # readinessProbe:
+        #   httpGet:
+        #     path: /ruta-de-salud # Reemplaza con la ruta correcta de tu aplicación para verificar su disponibilidad
+        #     port: 8000

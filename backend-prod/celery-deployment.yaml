@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: celery
+  namespace: pyaha-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: celery
+  template:
+    metadata:
+      labels:
+        app: celery
+    spec:
+      containers:
+      - name: celery
+        image: registry.gitlab.com/vmt-py/base-de-datos-vmt/backend-pyaha:latest
+        command: ["entrypoints/entrypoint-celery-prod.sh"]
+        env:
+          - name: POSTGRES_DB
+            valueFrom:
+              secretKeyRef:
+                name: postgres-secret
+                key: dbname
+          - name: POSTGRES_USER
+            valueFrom:
+              secretKeyRef:
+                name: postgres-secret
+                key: user
+          - name: POSTGRES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: postgres-secret
+                key: password
+          - name: POSTGRES_HOST
+            value: "direccion-host-postgres"
+          - name: DJANGO_ENV
+            value: "produccion"
+          - name: SECRET_KEY
+            valueFrom:
+              secretKeyRef:
+                name: django-secret
+                key: secret-key

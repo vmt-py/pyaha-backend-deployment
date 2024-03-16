@@ -1,51 +1,38 @@
-# Kubernetes Manifests
+# Manifiestos de Kubernetes
 
-This project contains Kubernetes manifests for deploying the following services:
+Este proyecto contiene los manifiestos de Kubernetes para desplegar los siguientes servicios:
 
-- `traefik-prod`: A Traefik reverse proxy for handling incoming traffic.
-- `db-prod`: A PostGIS database for storing data.
-- `backend-prod`: A backend service for serving application logic.
-- `nginx-prod`: An Nginx server for serving static files.
+- `traefik-prod`: Un proxy inverso Traefik para manejar el tráfico entrante.
+- `db-prod`: Una base de datos PostGIS para almacenar datos.
+- `backend-prod`: Un servicio backend para servir la lógica de la aplicación.
+- `nginx-prod`: Un servidor Nginx para servir archivos estáticos.
 
-## Directory Structure
+# Instalar el operador de crunchy data
 
-The project has the following directory structure:
+kubectl apply -k db-prod/install-operator/namespace
+kubectl apply --server-side -k db-prod/install-operator/default
 
-```
-k8s-manifests
-├── traefik-prod
-│   ├── deployment.yaml
-│   └── service.yaml
-├── db-prod
-│   ├── deployment.yaml
-│   ├── service.yaml
-│   └── persistentvolumeclaim.yaml
-├── backend-prod
-│   ├── deployment.yaml
-│   ├── service.yaml
-│   └── ingress.yaml
-├── nginx-prod
-│   ├── deployment.yaml
-│   ├── service.yaml
-│   └── ingress.yaml
-└── README.md
-```
+# Crear el cluster de la base de datos:
+kubectl apply -k db-prod/install-database
 
-## Manifest Files
+# Crear los secrets necesarios para hacer pull de la imagen:
+kubectl create secret docker-registry gitlab-registry \
+  --docker-server=registry.gitlab.com \
+  --docker-username=<tu-username> \
+  --docker-password=<tu-token> \
+  --namespace=pyaha-backend
 
-- `traefik-prod/deployment.yaml`: Defines the Kubernetes deployment for the `traefik-prod` service.
-- `traefik-prod/service.yaml`: Defines the Kubernetes service for the `traefik-prod` service.
-- `db-prod/deployment.yaml`: Defines the Kubernetes deployment for the `db-prod` service.
-- `db-prod/service.yaml`: Defines the Kubernetes service for the `db-prod` service.
-- `db-prod/persistentvolumeclaim.yaml`: Defines the persistent volume claim for the `db-prod` service.
-- `backend-prod/deployment.yaml`: Defines the Kubernetes deployment for the `backend-prod` service.
-- `backend-prod/service.yaml`: Defines the Kubernetes service for the `backend-prod` service.
-- `backend-prod/ingress.yaml`: Defines the Kubernetes ingress for the `backend-prod` service.
-- `nginx-prod/deployment.yaml`: Defines the Kubernetes deployment for the `nginx-prod` service.
-- `nginx-prod/service.yaml`: Defines the Kubernetes service for the `nginx-prod` service.
-- `nginx-prod/ingress.yaml`: Defines the Kubernetes ingress for the `nginx-prod` service.
+# Generar el secreto de Django:
+bash generate-django-secret.bash
 
-Please refer to the individual manifest files for more details on each service's configuration.
-```
+# Crear el servicio backend:
+kubectl apply -f backend-prod/backend-deployment.yaml
 
-This file provides an overview of the project structure and describes the purpose of each manifest file. It also provides instructions for further exploration of each service's configuration.
+## Para eliminarlo
+kubectl delete -f backend-prod/backend-deployment.yaml
+
+kubectl create secret docker-registry gitlab-registry \
+  --docker-server=registry.gitlab.com \
+  --docker-username=testkubernetes \
+  --docker-password=gldt-p3Zf_c5ARSkSxH43VScZ \
+  --namespace=pyaha-backend
