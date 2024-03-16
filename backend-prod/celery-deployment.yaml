@@ -13,6 +13,8 @@ spec:
       labels:
         app: celery
     spec:
+      imagePullSecrets:
+      - name: gitlab-registry
       containers:
       - name: celery
         image: registry.gitlab.com/vmt-py/base-de-datos-vmt/backend-pyaha:latest
@@ -21,24 +23,40 @@ spec:
           - name: POSTGRES_DB
             valueFrom:
               secretKeyRef:
-                name: postgres-secret
+                name: bbdd-pyaha-pguser-django
                 key: dbname
           - name: POSTGRES_USER
             valueFrom:
               secretKeyRef:
-                name: postgres-secret
+                name: bbdd-pyaha-pguser-django
                 key: user
           - name: POSTGRES_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: postgres-secret
+                name: bbdd-pyaha-pguser-django
                 key: password
           - name: POSTGRES_HOST
-            value: "direccion-host-postgres"
+            valueFrom:
+              secretKeyRef:
+                name: bbdd-pyaha-pguser-django
+                key: host
           - name: DJANGO_ENV
-            value: "produccion"
+            value: "prod"
           - name: SECRET_KEY
             valueFrom:
               secretKeyRef:
                 name: django-secret
                 key: secret-key
+        # Si necesitas exponer algún puerto para Celery, puedes hacerlo aquí, aunque normalmente no es necesario para tareas en background
+        # ports:
+        # - name: http
+        #   containerPort: 8000 
+        # Añadir livenessProbe y readinessProbe si tienes endpoints específicos para verificar el estado de Celery
+        # livenessProbe:
+        #   httpGet:
+        #     path: /ruta-de-salud-celery
+        #     port: 8000
+        # readinessProbe:
+        #   httpGet:
+        #     path: /ruta-de-salud-celery
+        #     port: 8000

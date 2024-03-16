@@ -28,6 +28,9 @@ kubectl create secret docker-registry gitlab-registry \
 # Generar el secreto de Django:
 bash generate-django-secret.bash
 
+# Crear el servicio de celery:
+kubectl apply -f backend-prod/celery-deployment.yaml
+
 # Crear el servicio backend:
 kubectl apply -f backend-prod/backend-deployment.yaml
 

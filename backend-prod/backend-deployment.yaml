@@ -23,27 +23,27 @@ spec:
           - name: POSTGRES_DB
             valueFrom:
               secretKeyRef:
-                name: bbdd-pyaha-pguser-bbdd-pyaha
+                name: bbdd-pyaha-pguser-django
                 key: dbname
           - name: POSTGRES_USER
             valueFrom:
               secretKeyRef:
-                name: bbdd-pyaha-pguser-bbdd-pyaha
+                name: bbdd-pyaha-pguser-django
                 key: user
           - name: POSTGRES_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: bbdd-pyaha-pguser-bbdd-pyaha
+                name: bbdd-pyaha-pguser-django
                 key: password
           - name: POSTGRES_HOST
             valueFrom:
               secretKeyRef:
-                name: bbdd-pyaha-pguser-bbdd-pyaha
+                name: bbdd-pyaha-pguser-django
                 key: host
           - name: POSTGRES_PORT
             valueFrom:
               secretKeyRef:
-                name: bbdd-pyaha-pguser-bbdd-pyaha
+                name: bbdd-pyaha-pguser-django
                 key: port
           - name: DJANGO_ENV
             value: "prod"

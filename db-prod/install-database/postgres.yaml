@@ -5,6 +5,11 @@ metadata:
 spec:
   image: registry.developers.crunchydata.com/crunchydata/crunchy-postgres-gis:ubi8-16.2-3.4-0
   postgresVersion: 16
+  users:
+    - name: django
+      databases:
+        - bbdd-pyaha
+      options: 'SUPERUSER'
   instances:
     - name: instance1
       dataVolumeClaimSpec:
@@ -12,7 +17,7 @@ spec:
         - "ReadWriteOnce"
         resources:
           requests:
-            storage: 1Gi
+            storage: 10Gi
   backups:
     pgbackrest:
       image: registry.developers.crunchydata.com/crunchydata/crunchy-pgbackrest:ubi8-2.49-0
