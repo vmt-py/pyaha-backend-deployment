@@ -35,6 +35,7 @@ kubectl apply -f backend-prod/celery-deployment.yaml
 kubectl apply -f backend-prod/backend-staticfiles-volume.yaml
 
 # Definir el deployment de nginx para los archivos estaticos:
+kubectl apply -f nginx-prod/configmap.yaml
 kubectl apply -f nginx-prod/deployment.yaml
 
 # Crear el servicio backend:
