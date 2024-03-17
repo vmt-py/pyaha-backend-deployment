@@ -1,8 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: django-config
-  namespace: pyaha-backend
-data:
-  DJANGO_ENV: "tu-valor-django-env"
-  SERVER_IP: "192.168.100.43"

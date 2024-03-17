@@ -31,6 +31,12 @@ bash generate-django-secret.bash
 # Crear el servicio de celery:
 kubectl apply -f backend-prod/celery-deployment.yaml
 
+# Definir el volumen para los archivos estaticos de django:
+kubectl apply -f backend-prod/backend-staticfiles-volume.yaml
+
+# Definir el deployment de nginx para los archivos estaticos:
+kubectl apply -f nginx-prod/deployment.yaml
+
 # Crear el servicio backend:
 kubectl apply -f backend-prod/backend-deployment.yaml
 

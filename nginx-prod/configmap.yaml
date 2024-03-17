@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-config
+  namespace: pyaha-backend
+data:
+  default.conf: |
+    server {
+      listen 80;
+      # server_name vmt.localhost; # O ajusta a tu nombre de dominio si es necesario
+
+      location /static/ {
+        alias /usr/share/nginx/html/static/;
+        expires 30d;
+      }
+
+      # Asegúrate de que la siguiente sección coincida con la configuración de tu servicio de backend en Kubernetes
+      # location / {
+      #   proxy_pass http://backend-service;
+      #   # ... otras configuraciones de proxy ...
+      # }
+    }

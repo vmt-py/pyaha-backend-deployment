@@ -15,6 +15,10 @@ spec:
     spec:
       imagePullSecrets:
       - name: gitlab-registry
+      volumes:
+      - name: static-volume
+        persistentVolumeClaim:
+          claimName: static-volume-prod
       containers:
       - name: backend
         image: registry.gitlab.com/vmt-py/base-de-datos-vmt/backend-pyaha:latest
@@ -54,12 +58,16 @@ spec:
                 key: secret-key
         ports:
         - name: http
-          containerPort: 8000 
+          containerPort: 8000
+        volumeMounts:
+        - name: static-volume
+          mountPath: /home/appuser/app/staticfiles
+        # Liveness y readiness probes, si las necesitas
         # livenessProbe:
         #   httpGet:
-        #     path: /ruta-de-salud # Reemplaza con la ruta correcta de tu aplicación para verificar su salud
+        #     path: /ruta-de-salud
         #     port: 8000
         # readinessProbe:
         #   httpGet:
-        #     path: /ruta-de-salud # Reemplaza con la ruta correcta de tu aplicación para verificar su disponibilidad
+        #     path: /ruta-de-salud
         #     port: 8000
