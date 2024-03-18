@@ -2,14 +2,12 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: backend-prod-ingress
+  namespace: pyaha-backend
   labels:
     app: backend-prod
-  annotations:
-    traefik.ingress.kubernetes.io/router.entrypoints: websecure
-    traefik.ingress.kubernetes.io/router.tls.certresolver: myresolver
 spec:
   rules:
-    - host: sis.vmt.gov.py
+    - host: localhost
       http:
         paths:
           - pathType: Prefix
@@ -19,7 +17,3 @@ spec:
                 name: backend-prod-service
                 port:
                   number: 8000
-  tls:
-    - hosts:
-        - sis.vmt.gov.py
-      secretName: backend-prod-tls

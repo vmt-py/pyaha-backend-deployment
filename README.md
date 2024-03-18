@@ -44,8 +44,3 @@ kubectl apply -f backend-prod/backend-deployment.yaml
 ## Para eliminarlo
 kubectl delete -f backend-prod/backend-deployment.yaml
 
-kubectl create secret docker-registry gitlab-registry \
-  --docker-server=registry.gitlab.com \
-  --docker-username=testkubernetes \
-  --docker-password=gldt-p3Zf_c5ARSkSxH43VScZ \
-  --namespace=pyaha-backend

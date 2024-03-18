@@ -3,7 +3,6 @@ kind: Deployment
 metadata:
   name: nginx-prod
   namespace: pyaha-backend
-
 spec:
   replicas: 1
   selector:

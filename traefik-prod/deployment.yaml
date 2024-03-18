@@ -1,40 +1,41 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: traefik-prod
+  name: traefik
+  namespace: kube-system
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: traefik-prod
+      app: traefik
   template:
     metadata:
       labels:
-        app: traefik-prod
+        app: traefik
     spec:
+      serviceAccountName: traefik-ingress-controller
       containers:
-        - name: traefik-prod
-          image: traefik:latest
-          command:
-            - "--providers.docker=true"
-            - "--providers.docker.exposedbydefault=false"
-            - "--entrypoints.web.address=:80"
-            - "--entrypoints.websecure.address=:443"
-            - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
-            - "--certificatesresolvers.myresolver.acme.email=tuemail@ejemplo.com"
-            - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
-          ports:
-            - containerPort: 80
-            - containerPort: 443
-          volumeMounts:
-            - name: docker-sock
-              mountPath: /var/run/docker.sock
-            - name: letsencrypt
-              mountPath: /letsencrypt
+      - name: traefik
+        image: traefik:v2.5
+        args:
+          - --configFile=/config/traefik.yaml
+          - --api.insecure
+          - --accesslog
+          - --entrypoints.web.Address=:80
+          - --entrypoints.websecure.Address=:443
+          - --providers.kubernetescrd
+        ports:
+          - name: web
+            containerPort: 80
+          - name: websecure
+            containerPort: 443
+          - name: admin
+            containerPort: 8080
+        volumeMounts:
+        - name: config
+          mountPath: /config
       volumes:
-        - name: docker-sock
-          hostPath:
-            path: /var/run/docker.sock
-        - name: letsencrypt
-          hostPath:
-            path: /path/to/letsencrypt
+      - name: config
+        configMap:
+          name: traefik-config
+
